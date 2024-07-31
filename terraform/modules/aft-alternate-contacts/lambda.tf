@@ -1,13 +1,13 @@
 # Update Alternate Contacts
 ## Lambda functions
-locals {
-  account_concurrent_limit = 1000  # Replace with your account's actual limit
-  max_reserved_concurrent = max(0, local.account_concurrent_limit - 10)
-  reserved_concurrent_executions = min(
-    data.aws_ssm_parameter.aft_customizations_max_concurrent.value,
-    local.max_reserved_concurrent
-  )
-}
+# locals {
+#   account_concurrent_limit = 1000  # Replace with your account's actual limit
+#   max_reserved_concurrent = max(0, local.account_concurrent_limit - 10)
+#   reserved_concurrent_executions = min(
+#     data.aws_ssm_parameter.aft_customizations_max_concurrent.value,
+#     local.max_reserved_concurrent
+#   )
+# }
 
 
 resource "aws_lambda_function" "aft_alternate_contacts_extract_lambda" {
@@ -23,7 +23,7 @@ resource "aws_lambda_function" "aft_alternate_contacts_extract_lambda" {
     mode = "Active"
   }
   #reserved_concurrent_executions = data.aws_ssm_parameter.aft_customizations_max_concurrent.value
-  reserved_concurrent_executions = local.reserved_concurrent_executions
+  #reserved_concurrent_executions = local.reserved_concurrent_executions
 }
 
 resource "aws_cloudwatch_log_group" "aft_alternate_contacts_extract_lambda_log" {
@@ -44,7 +44,7 @@ resource "aws_lambda_function" "aft_alternate_contacts_add_lambda" {
     mode = "Active"
   }
   #reserved_concurrent_executions = data.aws_ssm_parameter.aft_customizations_max_concurrent.value
-  reserved_concurrent_executions = local.reserved_concurrent_executions
+  #reserved_concurrent_executions = local.reserved_concurrent_executions
 }
 
 resource "aws_cloudwatch_log_group" "aft_alternate_contacts_add_lambda_log" {
@@ -65,7 +65,7 @@ resource "aws_lambda_function" "aft_alternate_contacts_validate_lambda" {
     mode = "Active"
   }
   #reserved_concurrent_executions = data.aws_ssm_parameter.aft_customizations_max_concurrent.value
-  reserved_concurrent_executions = local.reserved_concurrent_executions
+  #reserved_concurrent_executions = local.reserved_concurrent_executions
 }
 
 resource "aws_cloudwatch_log_group" "aft_alternate_contacts_validate_lambda_log" {
