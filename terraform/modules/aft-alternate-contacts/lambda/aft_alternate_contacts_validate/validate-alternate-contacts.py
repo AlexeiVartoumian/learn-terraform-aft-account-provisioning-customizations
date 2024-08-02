@@ -52,22 +52,19 @@ else:
 def validate_request(payload):
     logger.info("Function Start - validate_request")
     schema_path = os.path.join(
-        os.path.dirname(__file__), "schemas/valid_alternate_contact_schema.json"
+        os.path.dirname(__file__), "schemas", "valid_alternate_contact_schema.json"
     )
     logger.info(f"Schema path: {schema_path}")
     logger.info(f"Current directory contents: {os.listdir(os.path.dirname(__file__))}")
+    logger.info(f"Schemas directory contents: {os.listdir(os.path.join(os.path.dirname(__file__), 'schemas'))}")
     
     try:
         with open(schema_path) as schema_file:
             schema_object = json.load(schema_file)
         logger.info("Schema Loaded:" + json.dumps(schema_object))
-        validated = jsonschema.validate(payload, schema_object)
-        if validated is None:
-            logger.info("Request Validated")
-            return True
-        else:
-            logger.error(f"Validation failed: {validated}")
-            raise Exception(f"Failure validating request.\n{validated}")
+        jsonschema.validate(payload, schema_object)
+        logger.info("Request Validated")
+        return True
     except FileNotFoundError:
         logger.error(f"Schema file not found at {schema_path}")
         raise
