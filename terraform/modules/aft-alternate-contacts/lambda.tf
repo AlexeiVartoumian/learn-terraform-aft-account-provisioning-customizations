@@ -40,33 +40,9 @@ resource "aws_cloudwatch_log_group" "aft_alternate_contacts_add_lambda_log" {
   retention_in_days = var.cloudwatch_log_group_retention
 }
 
-resource "aws_lambda_function" "aft_alternate_contacts_validate_lambda" {
-  filename         = data.archive_file.aft_alternate_contacts_validate.output_path
-  function_name    = "aft-alternate-contacts-validate"
-  description      = "AFT account provisioning - Alternate Contacts - Validate"
-  role             = aws_iam_role.aft_alternate_contacts_validate_lambda_role.arn
-  handler          = "validate-alternate-contacts.lambda_handler"
-  source_code_hash = data.archive_file.aft_alternate_contacts_validate.output_base64sha256
-  runtime          = "python3.9"
-  timeout          = 30
-  tracing_config {
-    mode = "Active"
-  }
-  #reserved_concurrent_executions = data.aws_ssm_parameter.aft_customizations_max_concurrent.value
-  #reserved_concurrent_executions = local.reserved_concurrent_executions
-}
-
 resource "aws_cloudwatch_log_group" "aft_alternate_contacts_validate_lambda_log" {
   name              = "/aws/lambda/${aws_lambda_function.aft_alternate_contacts_validate_lambda.function_name}"
   retention_in_days = var.cloudwatch_log_group_retention
-}
-
-data "archive_file" "aft_alternate_contacts_validate" {
-  type        = "zip"
-  source_dir  = "${path.module}/lambda/aft_alternate_contacts_validate"
-  output_path = "${path.module}/lambda/aft_alternate_contacts_validate.zip"
-
-  depends_on = [null_resource.install_dependencies_validate]
 }
 
 
