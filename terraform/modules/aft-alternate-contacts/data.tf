@@ -31,17 +31,17 @@ data "archive_file" "aft_alternate_contacts_add" {
   output_path = "${path.module}/lambda/aft_alternate_contacts_add.zip"
 }
 
-resource "null_resource" "install_dependencies" {
-  provisioner "local-exec" {
-    command = "pip install jsonschema -t ${path.module}/lambda/aft_alternate_contacts_validate/"
-  }
+# resource "null_resource" "install_dependencies" {
+#   provisioner "local-exec" {
+#     command = "pip install jsonschema -t ${path.module}/lambda/aft_alternate_contacts_validate/"
+#   }
 
-  # This will cause the null_resource to run every time
-  # You might want to add some logic to prevent unnecessary runs
-  triggers = {
-    always_run = "${timestamp()}"
-  }
-}
+#   # This will cause the null_resource to run every time
+#   # You might want to add some logic to prevent unnecessary runs
+#   triggers = {
+#     always_run = "${timestamp()}"
+#   }
+# }
 
 resource "null_resource" "install_dependencies" {
   provisioner "local-exec" {
