@@ -16,26 +16,28 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 '''
 import sys
 import os
-
-# Add these logging statements at the very beginning
-print(f"Python version: {sys.version}")
-print(f"Initial sys.path: {sys.path}")
-print(f"Contents of /opt before modification: {os.listdir('/opt')}")
-
-sys.path.append('/opt/python')
-
-print(f"Sys path after modification: {sys.path}")
-print(f"Contents of /opt/python: {os.listdir('/opt/python')}")
-
 import json
 import logging
 import boto3
 
+# Set up logging
+logger = logging.getLogger()
+logger.setLevel(logging.INFO)
+
+# Add these logging statements at the very beginning
+logger.info(f"Python version: {sys.version}")
+logger.info(f"Initial sys.path: {sys.path}")
+logger.info(f"Contents of /opt: {os.listdir('/opt')}")
+
+sys.path.append('/opt')
+
+logger.info(f"Sys path after modification: {sys.path}")
+
 try:
     import jsonschema
-    print(f"Successfully imported jsonschema. Version: {jsonschema.__version__}")
+    logger.info(f"Successfully imported jsonschema. Version: {jsonschema.__version__}")
 except ImportError as e:
-    print(f"Failed to import jsonschema: {e}")
+    logger.error(f"Failed to import jsonschema: {e}")
 
 session = boto3.Session()
 logger = logging.getLogger()
