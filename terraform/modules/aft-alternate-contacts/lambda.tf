@@ -46,12 +46,19 @@ resource "aws_cloudwatch_log_group" "aft_alternate_contacts_validate_lambda_log"
 }
 
 
-resource "aws_lambda_layer_version" "jsonschema_layer" {
-  filename   = "${path.module}/lambda/aft_alternate_contacts_validate/jsonschema_layer.zip"
-  layer_name = "jsonschema-layer"
+# resource "aws_lambda_layer_version" "jsonschema_layer" {
+#   filename   = "${path.module}/lambda/aft_alternate_contacts_validate/jsonschema_layer.zip"
+#   layer_name = "jsonschema-layer"
 
+#   compatible_runtimes = ["python3.9"]
+# }
+
+resource "aws_lambda_layer_version" "jsonschema_layer_v2" {
+  filename   = "${path.module}/lambda/aft_alternate_contacts_validate/jsonschema_layer.zip"
+  layer_name = "jsonschema-layer-v2"
   compatible_runtimes = ["python3.9"]
 }
+
 
 data "archive_file" "aft_alternate_contacts_validate" {
   type        = "zip"

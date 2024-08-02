@@ -20,24 +20,49 @@ import json
 import logging
 import boto3
 
-# Set up logging
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
 
-# Add these logging statements at the very beginning
 logger.info(f"Python version: {sys.version}")
 logger.info(f"Initial sys.path: {sys.path}")
+logger.info(f"Contents of /var/task: {os.listdir('/var/task')}")
 logger.info(f"Contents of /opt: {os.listdir('/opt')}")
 
+# Add the Lambda layer to the Python path
 sys.path.append('/opt')
+sys.path.append('/opt/python')
 
-logger.info(f"Sys path after modification: {sys.path}")
+logger.info(f"Updated sys.path: {sys.path}")
+
 
 try:
     import jsonschema
-    logger.info(f"Successfully imported jsonschema. Version: {jsonschema.__version__}")
+    logger.info(f"Successfully imported jsonschema version: {jsonschema.__version__}")
+    
+    # Instead of importing rpds directly, let's check its location
+    import importlib.util
+    rpds_spec = importlib.util.find_spec("rpds")
+    if rpds_spec is not None:
+        logger.info(f"rpds module found at: {rpds_spec.origin}")
+    else:
+        logger.error("rpds module not found")
+    
+    # Let's also check for rpds_py
+    rpds_py_spec = importlib.util.find_spec("rpds_py")
+    if rpds_py_spec is not None:
+        logger.info(f"rpds_py module found at: {rpds_py_spec.origin}")
+    else:
+        logger.error("rpds_py module not found")
+
 except ImportError as e:
-    logger.error(f"Failed to import jsonschema: {e}")
+    logger.error(f"Failed to import: {e}")
+    # If import fails, let's check the contents of the directories in sys.path
+    for path in sys.path:
+        if os.path.exists(path):
+            logger.info(f"Contents of {path}: {os.listdir(path)}")
+        else:
+            logger.info(f"Path does not exist: {path}")
+    raise
 
 session = boto3.Session()
 logger = logging.getLogger()
