@@ -51,12 +51,16 @@ else:
 # Adapted from aft_commons - account_provisioning_framework.py
 def validate_request(payload):
     logger.info("Function Start - validate_request")
-    schema_path = os.path.join(
-        os.path.dirname(__file__), "schemas", "valid_alternate_contact_schema.json"
-    )
+    current_dir = os.path.dirname(__file__)
+    logger.info(f"Current directory: {current_dir}")
+    logger.info(f"Current directory contents: {os.listdir(current_dir)}")
+    
+    schema_path = os.path.join(current_dir, "schemas", "valid_alternate_contact_schema.json")
     logger.info(f"Schema path: {schema_path}")
-    logger.info(f"Current directory contents: {os.listdir(os.path.dirname(__file__))}")
-    logger.info(f"Schemas directory contents: {os.listdir(os.path.join(os.path.dirname(__file__), 'schemas'))}")
+    
+    if not os.path.exists(schema_path):
+        logger.error(f"Schema file not found at {schema_path}")
+        raise FileNotFoundError(f"Schema file not found at {schema_path}")
     
     try:
         with open(schema_path) as schema_file:
@@ -65,9 +69,6 @@ def validate_request(payload):
         jsonschema.validate(payload, schema_object)
         logger.info("Request Validated")
         return True
-    except FileNotFoundError:
-        logger.error(f"Schema file not found at {schema_path}")
-        raise
     except json.JSONDecodeError as e:
         logger.error(f"Error decoding JSON schema: {e}")
         raise
