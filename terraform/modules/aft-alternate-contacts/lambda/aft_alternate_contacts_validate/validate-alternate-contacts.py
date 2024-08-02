@@ -55,6 +55,12 @@ def validate_request(payload):
     logger.info(f"Current directory: {current_dir}")
     logger.info(f"Current directory contents: {os.listdir(current_dir)}")
     
+    schemas_dir = os.path.join(current_dir, "schemas")
+    if os.path.exists(schemas_dir):
+        logger.info(f"Schemas directory contents: {os.listdir(schemas_dir)}")
+    else:
+        logger.error(f"Schemas directory not found at {schemas_dir}")
+    
     schema_path = os.path.join(current_dir, "schemas", "valid_alternate_contact_schema.json")
     logger.info(f"Schema path: {schema_path}")
     

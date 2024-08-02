@@ -53,6 +53,13 @@ resource "aws_lambda_layer_version" "jsonschema_layer" {
   compatible_runtimes = ["python3.9"]
 }
 
+data "archive_file" "aft_alternate_contacts_validate" {
+  type        = "zip"
+  source_dir  = "${path.module}/lambda/aft_alternate_contacts_validate"
+  output_path = "${path.module}/lambda/aft_alternate_contacts_validate.zip"
+  excludes    = ["jsonschema_layer.zip", ".DS_Store", "Makefile"]
+}
+
 resource "aws_lambda_function" "aft_alternate_contacts_validate_lambda" {
   filename         = data.archive_file.aft_alternate_contacts_validate.output_path
   function_name    = "aft-alternate-contacts-validate"
@@ -67,10 +74,4 @@ resource "aws_lambda_function" "aft_alternate_contacts_validate_lambda" {
   tracing_config {
     mode = "Active"
   }
-}
-
-data "archive_file" "aft_alternate_contacts_validate" {
-  type        = "zip"
-  source_file = "${path.module}/lambda/aft_alternate_contacts_validate/validate-alternate-contacts.py"
-  output_path = "${path.module}/lambda/aft_alternate_contacts_validate.zip"
 }
