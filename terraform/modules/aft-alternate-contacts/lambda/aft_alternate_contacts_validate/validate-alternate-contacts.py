@@ -29,8 +29,7 @@ else:
     logger.setLevel(logging.INFO)
 
    
-with open('jsonschema.zip', 'r') as schema_file:
-    schema = json.load(schema_file)
+
 
 # Adapted from aft_commons - account_provisioning_framework.py
 def validate_request(payload):
