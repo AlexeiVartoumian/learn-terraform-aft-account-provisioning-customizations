@@ -42,11 +42,3 @@ resource "null_resource" "install_dependencies" {
     always_run = "${timestamp()}"
   }
 }
-
-data "archive_file" "aft_alternate_contacts_validate" {
-  type        = "zip"
-  source_dir  = "${path.module}/lambda/aft_alternate_contacts_validate"
-  output_path = "${path.module}/lambda/aft_alternate_contacts_validate.zip"
-
-  depends_on = [null_resource.install_dependencies_validate]
-}
