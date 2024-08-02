@@ -1,2 +1,2 @@
-jsonschema==4.23.0
+jsonschema==4.17.3
 referencing==0.35.1
