@@ -1,15 +1,3 @@
-# Update Alternate Contacts
-## Lambda functions
-# locals {
-#   account_concurrent_limit = 1000  # Replace with your account's actual limit
-#   max_reserved_concurrent = max(0, local.account_concurrent_limit - 10)
-#   reserved_concurrent_executions = min(
-#     data.aws_ssm_parameter.aft_customizations_max_concurrent.value,
-#     local.max_reserved_concurrent
-#   )
-# }
-
-
 resource "aws_lambda_function" "aft_alternate_contacts_extract_lambda" {
   filename         = data.archive_file.aft_alternate_contacts_extract.output_path
   function_name    = "aft-alternate-contacts-extract"
@@ -81,14 +69,12 @@ data "archive_file" "aft_alternate_contacts_validate" {
   depends_on = [null_resource.install_dependencies_validate]
 }
 
-resource "null_resource" "install_dependencies_validate" {
-  provisioner "local-exec" {
-    command = "pip install -r ${path.module}/lambda/aft_alternate_contacts_validate/requirements.txt -t ${path.module}/lambda/aft_alternate_contacts_validate/"
-  }
 
-  triggers = {
-    requirements = filemd5("${path.module}/lambda/aft_alternate_contacts_validate/requirements.txt")
-  }
+resource "aws_lambda_layer_version" "jsonschema_layer" {
+  filename   = "${path.module}/jsonschema_layer.zip"
+  layer_name = "jsonschema-layer"
+
+  compatible_runtimes = ["python3.9"]
 }
 
 resource "aws_lambda_function" "aft_alternate_contacts_validate_lambda" {
@@ -100,7 +86,15 @@ resource "aws_lambda_function" "aft_alternate_contacts_validate_lambda" {
   source_code_hash = data.archive_file.aft_alternate_contacts_validate.output_base64sha256
   runtime          = "python3.9"
   timeout          = 30
+  layers           = [aws_lambda_layer_version.jsonschema_layer.arn]
+
   tracing_config {
     mode = "Active"
   }
+}
+
+data "archive_file" "aft_alternate_contacts_validate" {
+  type        = "zip"
+  source_file = "${path.module}/lambda/aft_alternate_contacts_validate/validate-alternate-contacts.py"
+  output_path = "${path.module}/lambda/aft_alternate_contacts_validate.zip"
 }

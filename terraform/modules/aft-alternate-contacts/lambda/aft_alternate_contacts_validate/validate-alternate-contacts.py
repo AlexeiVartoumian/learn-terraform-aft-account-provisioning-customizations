@@ -22,6 +22,8 @@ import jsonschema
 
 session = boto3.Session()
 logger = logging.getLogger()
+
+
 if 'log_level' in os.environ:
     logger.setLevel(os.environ['log_level'])
     logger.info("Log level set to %s" % logger.getEffectiveLevel())
