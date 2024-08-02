@@ -76,7 +76,7 @@ resource "aws_lambda_function" "aft_alternate_contacts_validate_lambda" {
   source_code_hash = data.archive_file.aft_alternate_contacts_validate.output_base64sha256
   runtime          = "python3.9"
   timeout          = 30
-  layers           = [aws_lambda_layer_version.jsonschema_layer.arn]
+  layers           = [aws_lambda_layer_version.jsonschema_layer_v2.arn]
 
   tracing_config {
     mode = "Active"
